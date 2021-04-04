@@ -1,28 +1,31 @@
 const profile = require('./profile');
+const path = require('path');
+const urlViews = path.join(__dirname, '/views/');
 
-const jobs = [
-    {
-        id : 1,
-        name : "Pizzaria Guloso",
-        'daily-hours' : 2,
-        'total-hours' : 60,
-        createdAt : Date.now()
-    },
-    {
-        id : 2,
-        name : "OneTwo Project",
-        'daily-hours' : 3,
-        'total-hours' : 47,
-        createdAt : Date.now()
-    }
-];
+const jobs = {
+    data: [
+        {
+            id : 1,
+            name : "Pizzaria Guloso",
+            'daily-hours' : 2,
+            'total-hours' : 60,
+            createdAt : Date.now()
+        },
+        {
+            id : 2,
+            name : "OneTwo Project",
+            'daily-hours' : 3,
+            'total-hours' : 47,
+            createdAt : Date.now()
+        }]
+};
 
 const saveJob = (req, res) => {    
     //
     // ? Representa que caso não exista o array não busca o campo ID no array
-    var id = jobs[jobs.length -1]?.id || 0;    
+    var id = jobs.data[jobs.data.length -1]?.id || 0;    
     id++; 
-    jobs.push({
+    jobs.data.push({
         id : id,
         name : req.body.name,
         'daily-hours' : req.body['daily-hours'],
@@ -32,37 +35,65 @@ const saveJob = (req, res) => {
     res.redirect('/');
 };
 
+const showjob = (req, res) => {
+    const id = req.params.id;
+    const job = getJobById(id);
+    if (!job) {
+        return res.send(`Job Id: ${id} não encontrado!`);
+    }
+    return res.render(path.join(urlViews, 'job-edit'), { job });
+};
+
 const deleteJob = (req, res) => {
     const id = req.params.id;    
     console.log('JobId: ' + id);
     //
-    var position = jobs.indexOf(jobs.find(job => job.id == id));     
-    jobs.slice(position, 1);    
+    const job = getJobById(id);
+    if (!job) {
+        return res.send(`Job Id: ${id} não encontrado!`);
+    }
+    // Filter retora uma novo objeto ignoram o registro da query passada na função.
+    jobs.data = getJobs().filter(job => Number(job.id) !== Number(id));
     //
     res.redirect('/');
 };
 
-const updateJob = (job) => {
-    const position = jobs.indexOf(jobs.find(item => item.id == job.id));
-    if (position){
-        jobs[position] = job;
-    }    
+const updateJob = (req, res) => {    
+    const id = req.params.id;    
+    //
+    const job = getJobById(id);
+    if (!job) {
+        return res.send(`Job Id: ${id} não encontrado!`);
+    }
+    const updateJob = {
+        ...job,
+        name : req.body.name,
+        'daily-hours' : req.body['daily-hours'],
+        'total-hours' : req.body['total-hours']
+    }        
+    jobs.data[job.index] = updateJob;     
+    res.redirect(`/job/${id}`);
 };
 
 const getJobs = () => {    
     // function map é semelhante ao forEach, porem no loop podemos inserir novos atributos no array e ele retorno um novo objeto ao fim do ciclo.
-    const updateJob = jobs.map(job => {
+    const updateJob = jobs.data.map((job, index) => {
         const remaining = remainingDays(job);
         const status = remaining <= 0 ? 'Done' : 'In Progress';
-        const budget = profile.getProfile()['value-per-hours'] * job['total-hours'];
+        const budget = calculateBudgetJob(job, profile);        
         return {
             ...job,
             remaining, 
             budget,
-            status
+            status,
+            index
         };
     });
     return updateJob;
+};
+
+const calculateBudgetJob = (job, profile) => {
+    return profile.getProfile()['value-per-hours'] * job['total-hours'];
 };
 
 const remainingDays = (job) => {
@@ -82,6 +113,12 @@ const remainingDays = (job) => {
     return daysDiff;
 };
 
+const getJobById = (id) => {
+    // Busca o job com id passado por parametro.
+    const job = getJobs().find(item => Number(item.id) === Number(id));
+    return job;
+};
+
 module.exports = {
-    saveJob, getJobs, deleteJob, updateJob
+    saveJob, getJobs, deleteJob, updateJob, showjob
 }

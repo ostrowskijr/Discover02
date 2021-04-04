@@ -32,13 +32,13 @@
         <h2>Jakeliny</h2>
         <p>
           O valor da sua hora é <br/>
-          <strong><%= profile['value-per-hours'].toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) %> </strong>
+          <strong><%= profile['value-hours'].toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) %> </strong>
         </p>
         <button class="button green" form="form-profile" type="submit">Salvar dados</button>
       </aside>
       <main>
 
-        <form id="form-profile">
+        <form id="form-profile" method="post" action="/profile">
           <fieldset>
             <legend>Dados do perfil</legend>
             <div class="separator light"></div>
