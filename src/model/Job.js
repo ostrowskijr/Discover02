@@ -20,10 +20,10 @@ let data = [
 
 const get = () => {
     // function map é semelhante ao forEach, porem no loop podemos inserir novos atributos no array e ele retorno um novo objeto ao fim do ciclo.
-    return data.map((job, index) => {
-        const remaining = jobUtils.remainingDays(job);
-        const status = remaining <= 0 ? 'Done' : 'In Progress';
-        const budget = jobUtils.calculateBudgetJob(job, profile.get());        
+    const jobs = data.map((job, index) => {
+        const remaining = jobUtils.remainingDays(job);        
+        const status = remaining <= 0 ? 'done' : 'progress';
+        const budget = jobUtils.calculateBudgetJob(job, profile.get());                
         return {
             ...job,
             remaining, 
@@ -31,7 +31,8 @@ const get = () => {
             status,
             index
         };
-    });     
+    });    
+    return jobs; 
 }
 
 const save = (job) => {
@@ -47,17 +48,21 @@ const save = (job) => {
     });
 }
 
-const update = (id, newjob) => {
+const update = (newjob) => {
+    const id = newjob.id;
     const job = getById(id);
     if (!job) {
         return false;
     }
-    data[job.index] = {
-        ...job,
-        name : newjob.name,
-        'daily-hours' : newjob['daily-hours'],
-        'total-hours' : newjob['total-hours']
-    }        
+    data = get().map(job => {
+        if (Number(job.id) === Number(id)) {            
+            job = {
+                ...job,
+                ...newjob
+            }
+        }
+        return job;
+    });
     return true;   
 }
 

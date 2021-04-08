@@ -5,7 +5,7 @@ const calculateBudgetJob = (job, profile) => {
 
 const remainingDays = (job) => {
     // Calculo de tempo restante do projeto.
-    const remainingDays = (job["total-hours"] / job["daily-hours"]).toFixed(0);
+    const remainingDays = (job["total-hours"] / job["daily-hours"]).toFixed();
     // Data Final do projeto
     const createDate = new Date(job.createdAt);
     const dueDay = createDate.getDate() + Number(remainingDays);
@@ -15,7 +15,8 @@ const remainingDays = (job) => {
     // Dia em Milisegundos.
     const dayInMs = 1000 * 60 * 60 * 24;
     // Quantidade de dias restantes
-    const daysDiff = (timeDiffInMs / dayInMs).toFixed();
+    //const daysDiff = (timeDiffInMs / dayInMs).toFixed();
+    const daysDiff = Math.floor(timeDiffInMs / dayInMs);
     // Dias restantes para finalizar projeto.
     return daysDiff;
 };

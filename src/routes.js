@@ -1,12 +1,12 @@
 const express = require('express');
-const indexController = require('./controllers/IndexController')
+const DashbourdController = require('./controllers/DashbourdController')
 const jobController = require('./controllers/JobController')
 const profileController = require('./controllers/ProfileController');
 const router = express.Router();
 
 //
 // Rota Index.html (Render - Renderizar arquivo Ejs.)
-router.get('/', indexController.index);
+router.get('/', DashbourdController.index);
 // Rotas Jobs
 router.get('/job', jobController.index);
 router.get('/job/:id', jobController.show);

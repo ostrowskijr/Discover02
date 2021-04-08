@@ -13,9 +13,8 @@ const save = (req, res) => {
 const show = (req, res) => {
     const id = req.params.id;
     const job = Jobs.getById(id);
-    if (!job) {
-        return res.send(`Job Id: ${id} não encontrado!`);
-    }
+    //
+    if (!job) return res.send(`Job Id: ${id} não encontrado!`);
     return res.render('job-edit', { job });
 };
 
@@ -23,16 +22,17 @@ const remove = (req, res) => {
     const id = req.params.id;
     //
     const ok = Jobs.remove(id);
-    if (!ok){
-        return res.send(`Job Id: ${id} não encontrado!`);
-    }    
+    if (!ok) return res.send(`Job Id: ${id} não encontrado!`);    
     res.redirect('/');
 };
 
 const update = (req, res) => {    
-    const id = req.params.id;    
+    const id = req.params.id;
     //
-    const ok = Jobs.update(id, req.body);
+    const ok = Jobs.update({
+        id,
+        ...req.body        
+    });
     if (!ok) {
         return res.send(`Job Id: ${id} não encontrado!`);
     }    

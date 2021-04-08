@@ -18,9 +18,10 @@ const update = (req , res) => {
     // Valor por hora trabalhanda
     const valueHours = data['monthly-budget'] /monthlyTotalHours;
     //
+    const profile = Profile.get();
     Profile.update({
-        ...Profile.get(),
-        ...req.data,
+        ...profile,
+        ...data,
         'value-hours' : valueHours.toFixed(2)
     });
     return res.redirect('/profile');
