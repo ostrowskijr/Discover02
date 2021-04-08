@@ -1,23 +1,21 @@
 const express = require('express');
-const jobs = require('./job.js');
-const profile = require('./profile.js');
-const path = require('path');
+const DashbourdController = require('./controllers/DashbourdController')
+const jobController = require('./controllers/JobController')
+const profileController = require('./controllers/ProfileController');
 const router = express.Router();
 
-
-const urlViews = path.join(__dirname, '/views/');
 //
 // Rota Index.html (Render - Renderizar arquivo Ejs.)
-router.get('/', (req, res) => res.render(path.join(urlViews, 'index'), { jobs : jobs.getJobs(), profile : profile.getProfile() }));
+router.get('/', DashbourdController.index);
 // Rotas Jobs
-router.get('/job', (req, res) => res.render(path.join(urlViews, 'job')));
-router.get('/job/:id', jobs.showjob);
-router.post('/job', jobs.saveJob);
-router.post('/job/:id', jobs.updateJob);
-router.post('/job/delete/:id', jobs.deleteJob)
+router.get('/job', jobController.index);
+router.get('/job/:id', jobController.show);
+router.post('/job', jobController.save);
+router.post('/job/:id', jobController.update);
+router.post('/job/delete/:id', jobController.remove)
+//router.get('/job-edit', jobController.jobEdit);
 // Rotas Profile
-router.get('/job-edit', (req, res) => res.render(path.join(urlViews, 'job-edit')));
-router.get('/profile', (req, res) => res.render(path.join(urlViews, 'profile'), { profile : profile.getProfile() }));
-router.post('/profile', profile.updateProfile);
+router.get('/profile', profileController.index);
+router.post('/profile', profileController.update);
 
 module.exports = router;

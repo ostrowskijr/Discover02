@@ -31,7 +31,11 @@
           <img id="logo" src="./images/logo.svg" alt="Logo" />
           <span id="notification">
             <img src="/images/alert-octagon.svg" alt="Alerta" />
-            Você tem 2 horas livres no seu dia
+              <% if (freeHours <= 0) { %> 
+                <p>Você não possui horas livres em seu dia de trabalho.</p>
+              <% } else { %> 
+                <p>Você tem <%= freeHours %>  horas livres no seu dia</p>
+              <% } %> 
           </span>
           <a href="/profile" id="avatar-profile">
             <p><%= profile.name %>  <span>Ver perfil</span></p>
@@ -48,15 +52,15 @@
 
           <div class="info">
             <div class="total">
-              <strong>12</strong>
+              <strong><%= statusCount.total %> </strong>
               Projetos ao total
             </div>
             <div class="in-progress">
-              <strong>7</strong>
+              <strong><%= statusCount.progress %> </strong>
               Em andamento
             </div>
             <div class="finished">
-              <strong>4</strong>
+              <strong><%= statusCount.done %> </strong>
               Encerrados
             </div>
           </div>
@@ -93,7 +97,11 @@
                 <p><%= job.budget.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) %> </p>
               </div>
               <div class="status badge column">
-                <%= job.status %> 
+                <% if (job.status === 'progress') { %> 
+                  <p>Em Andamento</p>
+                  <% } else { %> 
+                    <p> Finalizado </p>
+                <% } %> 
               </div>
               <div class="actions column flex">
                 <p class="sr-only">Ações</p>

@@ -10,6 +10,8 @@ server.use(express.static(path.join(__dirname, '../public')));
 server.use(express.urlencoded({ extended: true }));
 // .set seta uma propriedade para o servidor express. (Habilitar a template engine EJS no projeto.)
 server.set('view engine', 'ejs');
+// Setar a localidade dos arquivos ejs do projeto.
+server.set('views', path.join(__dirname, 'views'));
 // Rotas do Sistema
 server.use(routes);
 
