@@ -3,6 +3,7 @@ const path = require('path');
 const porta = process.env.PORT || 3000;
 const routes = require('./routes');
 const server = express();
+
 //
 // Habilitar rotas para acesso aos arquivos estaticos do projeto.
 server.use(express.static(path.join(__dirname, '../public')));
@@ -14,7 +15,7 @@ server.set('view engine', 'ejs');
 server.set('views', path.join(__dirname, 'views'));
 // Rotas do Sistema
 server.use(routes);
-
+// 
 // Habilitar Servidor NodeJs na porta 3000
 server.listen(porta, (err) => {
     if (err) {
