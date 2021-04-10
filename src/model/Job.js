@@ -1,84 +1,80 @@
 const jobUtils = require('../Utils/JobUtils')
-const profile = require('../model/Profile')
+const Profile = require('../model/Profile')
+const Database = require('../db/config').database
 
-let data = [
-    {
-        id : 1,
-        name : "Pizzaria Guloso",
-        'daily-hours' : 2,
-        'total-hours' : 60,
-        createdAt : Date.now()
-    },
-    {
-        id : 2,
-        name : "OneTwo Project",
-        'daily-hours' : 3,
-        'total-hours' : 47,
-        createdAt : Date.now()
-    }
-];
-
-const get = () => {
-    // function map é semelhante ao forEach, porem no loop podemos inserir novos atributos no array e ele retorno um novo objeto ao fim do ciclo.
-    const jobs = data.map((job, index) => {
-        const remaining = jobUtils.remainingDays(job);        
-        const status = remaining <= 0 ? 'done' : 'progress';
-        const budget = jobUtils.calculateBudgetJob(job, profile.get());                
+const get = async () => {
+    const db = await Database();
+    //    
+    const sql = `SELECT * FROM job`;
+    const returnData = await db.all(sql);
+    const profile = await Profile.get();
+    //
+    const jobs = returnData.map((job) => {
+        const newJob = jobUtils.refactoryJob(job, profile);        
+        console.log(newJob);
         return {
-            ...job,
-            remaining, 
-            budget,
-            status,
-            index
-        };
+            ...newJob   
+        }        
     });    
+    db.close();    
     return jobs; 
 }
 
-const save = (job) => {
-    var id = get()[get().length -1]?.id || 0;   
-    id++;
+const save = async (job) => {
+    const db = await Database();
     //
-    data.push({
-        id : id,
-        name : job.name,
-        'daily-hours' : job['daily-hours'],
-        'total-hours' : job['total-hours'],
-        createdAt : Date.now()
-    });
+    const sql = `
+        insert into job (name, dailyHours, totalHours, createdAt)
+        values ("${job.name}", ${job['daily-hours']}, ${job['total-hours']}, ${Date.now()})
+    `;
+    await db.run(sql);
+    //
+    db.close();    
 }
 
-const update = (newjob) => {
+const update = async (newjob) => {
+    const db = await Database();
     const id = newjob.id;
-    const job = getById(id);
+    //
+    const sql = 
+    `UPDATE job SET 
+            name = "${newjob.name}",
+            dailyHours = ${newjob['daily-hours']},
+            totalHours = ${newjob['total-hours']}
+    WHERE id = ${id}`;
+    const job = await getById(id);
     if (!job) {
         return false;
     }
-    data = get().map(job => {
-        if (Number(job.id) === Number(id)) {            
-            job = {
-                ...job,
-                ...newjob
-            }
-        }
-        return job;
-    });
+    await db.run(sql);
+    //
+    db.close();
     return true;   
-}
+};
 
-const remove = (id) => {
-    //    
-    if (!getById(id)) {
+const remove = async (id) => {
+    const db = await Database();
+    //
+    const job = await getById(id);
+    if (!job) {
         return false;
     }
-    // Filter retora uma novo objeto ignoram o registro da query passada na função.
-    data = get().filter(job => Number(job.id) !== Number(id));
+    //
+    await db.run(`DELETE FROM job WHERE id = ${id}`);
+    //
+    db.close();
     return true;
 }
 
-const getById = (id) => {
-    // Busca o job com id passado por parametro.        
-    return get().find(item => Number(item.id) === Number(id));
+const getById = async (id) => {
+    // Busca o job com id passado por parametro.
+    const db = await Database();
+    //
+    const job = await db.get(`SELECT * FROM job WHERE id = ${id}`);
+    const profile = await Profile.get();    
+    //
+    db.close();
+    return jobUtils.refactoryJob(job, profile);
 };
 
 module.exports = {

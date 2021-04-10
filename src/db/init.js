@@ -32,16 +32,16 @@ const initDb = {
         //
         // Inserir dados inicias nas tables
         await db.run(`
-            insert into profile (name, avatar, daysPerWeek, hoursPerDay, hoursPerDay, vacationPerYear, valueHours)
+            insert into profile (name, avatar, monthlyBudget, daysPerWeek, hoursPerDay, vacationPerYear, valueHours)
                 values ('Luis A Ostrowski Jr', 'https://github.com/ostrowskijr.png', 12500, 5, 6, 4, 75);
         `);
         await db.run(`
             insert into job (name, dailyHours, totalHours, createdAt)
-                values ("Pizzaria Guloso", 2, 60, '09/04/2021');
+                values ("Pizzaria Guloso", 2, 60, ${Date.now()});
         `);
         await db.run(`
             insert into job (name, dailyHours, totalHours, createdAt)
-                values ("OneTwo Project", 3, 47, '09/04/2021');
+                values ("OneTwo Project", 3, 47, ${Date.now()});
         `);
         //
         // Encerrar conexão com database Sqlite

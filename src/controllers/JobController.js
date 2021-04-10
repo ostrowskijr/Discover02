@@ -3,33 +3,34 @@ const Jobs = require('../model/Job')
 const index = (req, res) => { res.render('job') }
 //const jobEdit = (req, res) => { res.render('job-edit') }
 
-const save = (req, res) => {    
+const save = async (req, res) => {    
     //
     // ? Representa que caso não exista o array não busca o campo ID no array
-    Jobs.save(req.body)
+    await Jobs.save(req.body)
     res.redirect('/');
 };
 
-const show = (req, res) => {
+const show = async (req, res) => {
     const id = req.params.id;
-    const job = Jobs.getById(id);
+    const job = await Jobs.getById(id);
+    console.log(job);
     //
     if (!job) return res.send(`Job Id: ${id} não encontrado!`);
     return res.render('job-edit', { job });
 };
 
-const remove = (req, res) => {
+const remove = async (req, res) => {
     const id = req.params.id;
     //
-    const ok = Jobs.remove(id);
+    const ok = await Jobs.remove(id);
     if (!ok) return res.send(`Job Id: ${id} não encontrado!`);    
     res.redirect('/');
 };
 
-const update = (req, res) => {    
+const update = async (req, res) => {    
     const id = req.params.id;
     //
-    const ok = Jobs.update({
+    const ok = await Jobs.update({
         id,
         ...req.body        
     });

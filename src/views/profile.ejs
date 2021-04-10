@@ -29,7 +29,7 @@
     <div class="container animate-up delay-2">
       <aside class="card">
         <img src="<%= profile.avatar %>" alt="Jakeliny">
-        <h2>Jakeliny</h2>
+        <h2><%= profile.name %> </h2>
         <p>
           O valor da sua hora é <br/>
           <strong><%= profile['value-hours'].toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) %> </strong>

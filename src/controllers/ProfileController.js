@@ -1,10 +1,10 @@
 const Profile = require('../model/Profile')
 
-const index = (req, res) => {
-    res.render('profile', { profile : Profile.get() });
+const index = async (req, res) => {
+    res.render('profile', { profile : await Profile.get() });
 };
 
-const update = (req , res) => {
+const update = async (req , res) => {
     // Dados da requisição
     const data = req.body;
     // Semanas no ano
@@ -18,8 +18,9 @@ const update = (req , res) => {
     // Valor por hora trabalhanda
     const valueHours = data['monthly-budget'] /monthlyTotalHours;
     //
-    const profile = Profile.get();
-    Profile.update({
+    const profile = await Profile.get();
+    //
+    await Profile.update({
         ...profile,
         ...data,
         'value-hours' : valueHours.toFixed(2)

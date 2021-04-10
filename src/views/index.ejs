@@ -97,11 +97,7 @@
                 <p><%= job.budget.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) %> </p>
               </div>
               <div class="status badge column">
-                <% if (job.status === 'progress') { %> 
-                  <p>Em Andamento</p>
-                  <% } else { %> 
-                    <p> Finalizado </p>
-                <% } %> 
+                <%= job.status === 'done' ? 'Encerrado' : 'Em andamento' %> 
               </div>
               <div class="actions column flex">
                 <p class="sr-only">Ações</p>

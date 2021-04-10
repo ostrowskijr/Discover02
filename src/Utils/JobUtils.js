@@ -1,6 +1,5 @@
-
 const calculateBudgetJob = (job, profile) => {
-    return profile['value-per-hours'] * job['total-hours'];
+    return Number(profile["value-hours"]) * Number(job["total-hours"]);
 };
 
 const remainingDays = (job) => {
@@ -21,6 +20,25 @@ const remainingDays = (job) => {
     return daysDiff;
 };
 
+const refactoryJob = (job, profile) => {    
+    //                        
+    const newJob = {
+        'id' : job.id,
+        name : job.name,
+        'daily-hours' : job.dailyHours,
+        'total-hours' : job.totalHours,
+        createdAt : job.createdAt            
+    };
+    const remaining = remainingDays(newJob);  
+    const status = remaining <= 0 ? 'done' : 'progress';
+    const budget = calculateBudgetJob(newJob, profile);
+    //
+    newJob.remaining = remaining;
+    newJob.status = status;
+    newJob.budget = budget;        
+    return newJob;    
+};
+
 module.exports = {
-    calculateBudgetJob, remainingDays
+    calculateBudgetJob, remainingDays, refactoryJob
 }
