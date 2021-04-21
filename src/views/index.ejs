@@ -89,15 +89,15 @@
                 <% if (job.status !== 'done') { %> 
                   <p><%= job.remaining %>  dias para a entrega</p>
                 <% } else { %> 
-                  <p>Prazo encerrado.</p>
+                  <p>Prazo Encerrado.</p>
                 <% } %> 
               </div>
               <div class="amount column">
                 <span>Valor</span>
                 <p><%= job.budget.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) %> </p>
               </div>
-              <div class="status badge column">
-                <%= job.status === 'done' ? 'Encerrado' : 'Em andamento' %> 
+              <div class="status badge column <%= job.status %>">
+                <%= job.status === 'done' ? 'Encerrado' : 'Em andamento' %>
               </div>
               <div class="actions column flex">
                 <p class="sr-only">Ações</p>
